@@ -143,8 +143,16 @@ async function loadConfig() {
   // APPLY UI
   // ==========================================
 
-  characterName.textContent =
-    config.name || 'Безымянный';
+console.log('NAME CHECK:', config.name);
+
+if (!config.name) {
+  console.warn('NAME IS EMPTY');
+}
+
+characterName.innerText = '';
+characterName.innerText = String(config.name);
+
+console.log('NAME IN DOM:', characterName.innerText);
 
   console.log('NAME APPLIED:', characterName.textContent);
 
