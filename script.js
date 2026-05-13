@@ -1,6 +1,7 @@
 // script.js
 const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
+
 // ==========================================
 // DOM
 // ==========================================
@@ -40,18 +41,19 @@ async function fetchSheet(range) {
 }
 
 // ==========================================
-// SAFE CELL READ
+// SAFE CELL READ (FIXED)
 // ==========================================
 
 function getCell(cell) {
 
   if (!cell) return '';
 
-  // самый надёжный вариант для gviz
+  // raw value
   if (cell.v !== undefined && cell.v !== null) {
     return String(cell.v);
   }
 
+  // formatted value fallback
   if (cell.f !== undefined && cell.f !== null) {
     return String(cell.f);
   }
@@ -60,7 +62,7 @@ function getCell(cell) {
 }
 
 // ==========================================
-// LOAD TABLES (INVENTORY ETC)
+// LOAD TABLE
 // ==========================================
 
 async function loadRange(range) {
@@ -90,7 +92,7 @@ async function loadRange(range) {
 }
 
 // ==========================================
-// LOAD CONFIG (FIXED)
+// LOAD CONFIG (FIXED & STABLE)
 // ==========================================
 
 async function loadConfig() {
@@ -99,36 +101,57 @@ async function loadConfig() {
 
   const config = {};
 
-  rows.forEach(row => {
+  for (const row of rows) {
 
-    if (!row.c || !row.c[0]) return;
+    const cells = row.c || [];
 
-    const key = String(getCell(row.c[0])).trim().toLowerCase();
-    const value = row.c[1] ? String(getCell(row.c[1])).trim() : '';
+    const keyRaw = cells[0] ? getCell(cells[0]) : '';
+    const valueRaw = cells[1] ? getCell(cells[1]) : '';
 
-    if (key) config[key] = value;
-  });
+    const key = String(keyRaw).trim().toLowerCase();
+
+    // стабилизация строки (убирает Google Sheets мусор)
+    const value = valueRaw
+      ? JSON.parse(JSON.stringify(String(valueRaw).trim()))
+      : '';
+
+    if (!key) continue;
+
+    config[key] = value;
+  }
 
   console.log('CONFIG:', config);
 
+  // ==========================================
   // NAME
+  // ==========================================
+
   characterName.textContent =
     config.name || 'Безымянный';
 
+  // ==========================================
   // AVATAR
+  // ==========================================
+
   if (config.avatar) {
     avatar.src = config.avatar;
   }
 
+  // ==========================================
   // HP / MP
+  // ==========================================
+
   const hp = Number(config.hp || 0);
   const maxhp = Number(config.maxhp || 1);
 
   const mp = Number(config.mp || 0);
   const maxmp = Number(config.maxmp || 1);
 
-  hpFill.style.width = (hp / maxhp) * 100 + '%';
-  mpFill.style.width = (mp / maxmp) * 100 + '%';
+  const hpPercent = Math.max(0, Math.min(100, (hp / maxhp) * 100));
+  const mpPercent = Math.max(0, Math.min(100, (mp / maxmp) * 100));
+
+  hpFill.style.width = hpPercent + '%';
+  mpFill.style.width = mpPercent + '%';
 
   hpText.textContent = `${hp}/${maxhp}`;
   mpText.textContent = `${mp}/${maxmp}`;
