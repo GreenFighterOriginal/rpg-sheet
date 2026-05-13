@@ -3,7 +3,7 @@ const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
 // ==========================================
 
-const CONFIG_RANGE = 'Config!A1:A500';
+const CONFIG_RANGE = 'Config!A:A';
 
 const table = document.getElementById('data-table');
 
@@ -116,4 +116,4 @@ tabs.forEach(tab => {
 
 loadConfig();
 
-loadRange('Inventory!A1:D20');
+loadRange('Inventory!A:D');
