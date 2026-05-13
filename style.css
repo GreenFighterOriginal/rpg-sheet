@@ -49,6 +49,8 @@ body {
   padding: 20px;
 
   box-shadow: 0 0 20px rgba(0,0,0,0.7);
+
+  height: fit-content;
 }
 
 .avatar-frame {
@@ -130,6 +132,8 @@ body {
   border-radius: 20px;
 
   padding: 20px;
+
+  min-width: 0;
 }
 
 .tabs {
@@ -137,6 +141,8 @@ body {
   gap: 10px;
 
   margin-bottom: 20px;
+
+  flex-wrap: wrap;
 }
 
 .tab {
@@ -167,15 +173,25 @@ body {
 
 .table-container {
   overflow-x: auto;
+  overflow-y: auto;
+
+  max-height: 70vh;
+
+  border: 1px solid #6f5630;
+
+  border-radius: 12px;
 }
 
 table {
   width: 100%;
 
   border-collapse: collapse;
+
+  min-width: 600px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #8f7440;
 
   padding: 12px;
@@ -185,8 +201,51 @@ th, td {
 
 th {
   background: #4e391d;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 2;
 }
 
 tr:nth-child(even) {
   background: rgba(255,255,255,0.03);
+}
+
+/* Красивый скролл */
+
+.table-container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #8c672f;
+
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #b89040;
+}
+
+/* Адаптивность */
+
+@media (max-width: 900px) {
+
+  .container {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    width: 100%;
+  }
+
+  table {
+    min-width: 500px;
+  }
 }
