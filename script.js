@@ -1,6 +1,10 @@
 // script.js
 const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
+// ==========================================
+// DOM
+// ==========================================
+
 const table = document.getElementById('data-table');
 
 const avatar = document.getElementById('avatar');
@@ -15,7 +19,7 @@ const mpText = document.getElementById('mp-text');
 const tabs = document.querySelectorAll('.tab');
 
 // ==========================================
-// GOOGLE SHEETS FETCH
+// FETCH SHEET
 // ==========================================
 
 async function fetchSheet(range) {
@@ -25,67 +29,51 @@ async function fetchSheet(range) {
   const url =
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${sheet}&range=${cells}&tqx=out:json`;
 
-  const response = await fetch(url);
+  const res = await fetch(url);
 
-  const text = await response.text();
+  const text = await res.text();
 
   const json =
-    JSON.parse(text.substr(47).slice(0, -2));
+    JSON.parse(text.substring(47, text.length - 2));
 
-  return json.table.rows;
+  return json.table.rows || [];
 }
 
 // ==========================================
-// GET CELL VALUE
+// SAFE CELL READ
 // ==========================================
 
-function getCellValue(cell) {
-
+function getCell(cell) {
   if (!cell) return '';
-
-  // formatted value
-  if (cell.f !== undefined) return cell.f;
-
-  // raw value
   if (cell.v !== undefined) return cell.v;
-
+  if (cell.f !== undefined) return cell.f;
   return '';
 }
 
 // ==========================================
-// LOAD TABLE
+// LOAD TABLES (INVENTORY ETC)
 // ==========================================
 
 async function loadRange(range) {
 
   const rows = await fetchSheet(range);
 
-  renderTable(rows);
-}
-
-// ==========================================
-// RENDER TABLE
-// ==========================================
-
-function renderTable(rows) {
-
   table.innerHTML = '';
 
-  rows.forEach((row, index) => {
+  rows.forEach((row, i) => {
 
     const tr = document.createElement('tr');
 
-    row.c.forEach(cell => {
+    const cells = row.c || [];
 
-      const element =
-        document.createElement(
-          index === 0 ? 'th' : 'td'
-        );
+    cells.forEach(cell => {
 
-      element.textContent =
-        getCellValue(cell);
+      const tag = i === 0 ? 'th' : 'td';
+      const el = document.createElement(tag);
 
-      tr.appendChild(element);
+      el.textContent = getCell(cell);
+
+      tr.appendChild(el);
     });
 
     table.appendChild(tr);
@@ -93,76 +81,48 @@ function renderTable(rows) {
 }
 
 // ==========================================
-// LOAD CONFIG
+// LOAD CONFIG (FIXED)
 // ==========================================
 
 async function loadConfig() {
 
-  const rows =
-    await fetchSheet('Config!A:B');
+  const rows = await fetchSheet('Config!A:B');
 
   const config = {};
 
   rows.forEach(row => {
 
-    const key =
-      getCellValue(row.c[0]);
+    if (!row.c || !row.c[0]) return;
 
-    const value =
-      getCellValue(row.c[1]);
+    const key = String(getCell(row.c[0])).trim().toLowerCase();
+    const value = row.c[1] ? String(getCell(row.c[1])).trim() : '';
 
-    if (key) {
-      config[key.toLowerCase()] = value;
-    }
+    if (key) config[key] = value;
   });
 
-  // ==========================================
-  // NAME
-  // ==========================================
+  console.log('CONFIG:', config);
 
+  // NAME
   characterName.textContent =
     config.name || 'Безымянный';
 
-  // ==========================================
   // AVATAR
-  // ==========================================
+  if (config.avatar) {
+    avatar.src = config.avatar;
+  }
 
-  avatar.src =
-    config.avatar || '';
-
-  // ==========================================
   // HP / MP
-  // ==========================================
+  const hp = Number(config.hp || 0);
+  const maxhp = Number(config.maxhp || 1);
 
-  const hp =
-    Number(config.hp || 0);
+  const mp = Number(config.mp || 0);
+  const maxmp = Number(config.maxmp || 1);
 
-  const maxhp =
-    Number(config.maxhp || 1);
+  hpFill.style.width = (hp / maxhp) * 100 + '%';
+  mpFill.style.width = (mp / maxmp) * 100 + '%';
 
-  const mp =
-    Number(config.mp || 0);
-
-  const maxmp =
-    Number(config.maxmp || 1);
-
-  const hpPercent =
-    (hp / maxhp) * 100;
-
-  const mpPercent =
-    (mp / maxmp) * 100;
-
-  hpFill.style.width =
-    hpPercent + '%';
-
-  mpFill.style.width =
-    mpPercent + '%';
-
-  hpText.textContent =
-    `${hp}/${maxhp}`;
-
-  mpText.textContent =
-    `${mp}/${maxmp}`;
+  hpText.textContent = `${hp}/${maxhp}`;
+  mpText.textContent = `${mp}/${maxmp}`;
 }
 
 // ==========================================
@@ -173,9 +133,7 @@ tabs.forEach(tab => {
 
   tab.addEventListener('click', () => {
 
-    tabs.forEach(t =>
-      t.classList.remove('active')
-    );
+    tabs.forEach(t => t.classList.remove('active'));
 
     tab.classList.add('active');
 
@@ -188,5 +146,4 @@ tabs.forEach(tab => {
 // ==========================================
 
 loadConfig();
-
 loadRange('Inventory!A:D');
