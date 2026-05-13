@@ -1,7 +1,6 @@
 // script.js
 const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
-
 // ==========================================
 // DOM
 // ==========================================
@@ -20,7 +19,7 @@ const mpText = document.getElementById('mp-text');
 const tabs = document.querySelectorAll('.tab');
 
 // ==========================================
-// FETCH SHEET
+// FETCH SHEET (STABLE gviz)
 // ==========================================
 
 async function fetchSheet(range) {
@@ -31,7 +30,6 @@ async function fetchSheet(range) {
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${sheet}&range=${cells}&tqx=out:json`;
 
   const res = await fetch(url);
-
   const text = await res.text();
 
   const json =
@@ -41,19 +39,19 @@ async function fetchSheet(range) {
 }
 
 // ==========================================
-// SAFE CELL READ (FIXED)
+// SAFE CELL READER (FIXED TEXT + NUMBERS)
 // ==========================================
 
 function getCell(cell) {
 
   if (!cell) return '';
 
-  // raw value
+  // ALWAYS prefer v (raw value)
   if (cell.v !== undefined && cell.v !== null) {
     return String(cell.v);
   }
 
-  // formatted value fallback
+  // fallback formatted
   if (cell.f !== undefined && cell.f !== null) {
     return String(cell.f);
   }
@@ -62,7 +60,7 @@ function getCell(cell) {
 }
 
 // ==========================================
-// LOAD TABLE
+// LOAD TABLE (Inventory / Skills / etc)
 // ==========================================
 
 async function loadRange(range) {
@@ -79,8 +77,7 @@ async function loadRange(range) {
 
     cells.forEach(cell => {
 
-      const tag = i === 0 ? 'th' : 'td';
-      const el = document.createElement(tag);
+      const el = document.createElement(i === 0 ? 'th' : 'td');
 
       el.textContent = getCell(cell);
 
@@ -92,7 +89,7 @@ async function loadRange(range) {
 }
 
 // ==========================================
-// LOAD CONFIG (FIXED & STABLE)
+// LOAD CONFIG (FIXED TEXT HANDLING)
 // ==========================================
 
 async function loadConfig() {
@@ -105,25 +102,18 @@ async function loadConfig() {
 
     const cells = row.c || [];
 
-    const keyRaw = cells[0] ? getCell(cells[0]) : '';
-    const valueRaw = cells[1] ? getCell(cells[1]) : '';
-
-    const key = String(keyRaw).trim().toLowerCase();
-
-    // стабилизация строки (убирает Google Sheets мусор)
-    const value = valueRaw
-      ? JSON.parse(JSON.stringify(String(valueRaw).trim()))
-      : '';
+    const key = cells[0] ? getCell(cells[0]).trim().toLowerCase() : '';
+    const value = cells[1] ? getCell(cells[1]).trim() : '';
 
     if (!key) continue;
 
     config[key] = value;
   }
 
-  console.log('CONFIG:', config);
+  console.log('CONFIG LOADED:', config);
 
   // ==========================================
-  // NAME
+  // NAME (FIXED)
   // ==========================================
 
   characterName.textContent =
@@ -147,8 +137,8 @@ async function loadConfig() {
   const mp = Number(config.mp || 0);
   const maxmp = Number(config.maxmp || 1);
 
-  const hpPercent = Math.max(0, Math.min(100, (hp / maxhp) * 100));
-  const mpPercent = Math.max(0, Math.min(100, (mp / maxmp) * 100));
+  const hpPercent = (hp / maxhp) * 100;
+  const mpPercent = (mp / maxmp) * 100;
 
   hpFill.style.width = hpPercent + '%';
   mpFill.style.width = mpPercent + '%';
