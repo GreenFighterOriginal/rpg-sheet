@@ -44,9 +44,18 @@ async function fetchSheet(range) {
 // ==========================================
 
 function getCell(cell) {
+
   if (!cell) return '';
-  if (cell.v !== undefined) return cell.v;
-  if (cell.f !== undefined) return cell.f;
+
+  // самый надёжный вариант для gviz
+  if (cell.v !== undefined && cell.v !== null) {
+    return String(cell.v);
+  }
+
+  if (cell.f !== undefined && cell.f !== null) {
+    return String(cell.f);
+  }
+
   return '';
 }
 
