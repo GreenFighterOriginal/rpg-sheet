@@ -1,10 +1,5 @@
 // script.js
-
-// ==========================================
-// ВСТАВЬ СЮДА ID СВОЕЙ GOOGLE ТАБЛИЦЫ
-// ==========================================
-
-const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
+const SHEET_ID = '1CqwG8KHjC4_TvZvbDuhaQfvbTU63MDIUM_dI1G9Z5V0';
 
 // ==========================================
 
