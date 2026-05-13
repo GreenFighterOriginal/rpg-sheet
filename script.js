@@ -1,9 +1,9 @@
 // script.js
-const SHEET_ID = '1CqwG8KHjC4_TvZvbDuhaQfvbTU63MDIUM_dI1G9Z5V0';
+const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
 // ==========================================
 
-const CONFIG_RANGE = 'Config!A1:B20';
+const CONFIG_RANGE = 'Config!A1:A500';
 
 const table = document.getElementById('data-table');
 
