@@ -19,7 +19,7 @@ const mpText = document.getElementById('mp-text');
 const tabs = document.querySelectorAll('.tab');
 
 // ==========================================
-// FETCH SHEET (STABLE gviz)
+// FETCH SHEET
 // ==========================================
 
 async function fetchSheet(range) {
@@ -29,43 +29,53 @@ async function fetchSheet(range) {
   const url =
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${sheet}&range=${cells}&tqx=out:json`;
 
+  console.log('FETCH URL:', url);
+
   const res = await fetch(url);
   const text = await res.text();
 
+  console.log('RAW RESPONSE:', text.slice(0, 200));
+
   const json =
     JSON.parse(text.substring(47, text.length - 2));
+
+  console.log('PARSED JSON:', json);
 
   return json.table.rows || [];
 }
 
 // ==========================================
-// SAFE CELL READER (FIXED TEXT + NUMBERS)
+// SAFE CELL READER
 // ==========================================
 
 function getCell(cell) {
 
   if (!cell) return '';
 
-  // ALWAYS prefer v (raw value)
-  if (cell.v !== undefined && cell.v !== null) {
-    return String(cell.v);
+  console.log('CELL RAW:', cell);
+
+  if (cell.f !== undefined && cell.f !== null && cell.f !== '') {
+    console.log('CELL F USED:', cell.f);
+    return String(cell.f);
   }
 
-  // fallback formatted
-  if (cell.f !== undefined && cell.f !== null) {
-    return String(cell.f);
+  if (cell.v !== undefined && cell.v !== null) {
+    console.log('CELL V USED:', cell.v);
+    return String(cell.v);
   }
 
   return '';
 }
 
 // ==========================================
-// LOAD TABLE (Inventory / Skills / etc)
+// LOAD TABLE
 // ==========================================
 
 async function loadRange(range) {
 
   const rows = await fetchSheet(range);
+
+  console.log('TABLE ROWS:', rows);
 
   table.innerHTML = '';
 
@@ -79,7 +89,11 @@ async function loadRange(range) {
 
       const el = document.createElement(i === 0 ? 'th' : 'td');
 
-      el.textContent = getCell(cell);
+      const value = getCell(cell);
+
+      console.log(`TABLE CELL [${i}]:`, value);
+
+      el.textContent = value;
 
       tr.appendChild(el);
     });
@@ -89,12 +103,14 @@ async function loadRange(range) {
 }
 
 // ==========================================
-// LOAD CONFIG (FIXED TEXT HANDLING)
+// LOAD CONFIG (FULL DEBUG)
 // ==========================================
 
 async function loadConfig() {
 
   const rows = await fetchSheet('Config!A:B');
+
+  console.log('CONFIG ROWS RAW:', rows);
 
   const config = {};
 
@@ -102,33 +118,42 @@ async function loadConfig() {
 
     const cells = row.c || [];
 
-    const key = cells[0] ? getCell(cells[0]).trim().toLowerCase() : '';
-    const value = cells[1] ? getCell(cells[1]).trim() : '';
+    const keyCell = cells[0];
+    const valCell = cells[1];
 
-    if (!key) continue;
+    const rawKey = getCell(keyCell);
+    const rawVal = getCell(valCell);
+
+    console.log('KEY RAW:', rawKey, 'VALUE RAW:', rawVal);
+
+    const key = String(rawKey || '').trim().toLowerCase();
+    const value = String(rawVal || '').trim();
+
+    if (!key) {
+      console.log('SKIP EMPTY KEY');
+      continue;
+    }
 
     config[key] = value;
   }
 
-  console.log('CONFIG LOADED:', config);
+  console.log('FINAL CONFIG OBJECT:', config);
 
   // ==========================================
-  // NAME (FIXED)
+  // APPLY UI
   // ==========================================
 
+  characterName.textContent =
+    config.name || 'Безымянный';
 
-
-  // ==========================================
-  // AVATAR
-  // ==========================================
+  console.log('NAME APPLIED:', characterName.textContent);
 
   if (config.avatar) {
     avatar.src = config.avatar;
+    console.log('AVATAR SET:', config.avatar);
+  } else {
+    console.log('NO AVATAR');
   }
-
-  // ==========================================
-  // HP / MP
-  // ==========================================
 
   const hp = Number(config.hp || 0);
   const maxhp = Number(config.maxhp || 1);
@@ -144,6 +169,8 @@ async function loadConfig() {
 
   hpText.textContent = `${hp}/${maxhp}`;
   mpText.textContent = `${mp}/${maxmp}`;
+
+  console.log('HP/MP LOADED:', { hp, maxhp, mp, maxmp });
 }
 
 // ==========================================
@@ -157,6 +184,8 @@ tabs.forEach(tab => {
     tabs.forEach(t => t.classList.remove('active'));
 
     tab.classList.add('active');
+
+    console.log('TAB CLICKED:', tab.dataset.range);
 
     loadRange(tab.dataset.range);
   });
