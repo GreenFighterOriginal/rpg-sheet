@@ -1,10 +1,6 @@
 // script.js
 const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
-// ==========================================
-
-const CONFIG_RANGE = 'Config!A:B';
-
 const table = document.getElementById('data-table');
 
 const avatar = document.getElementById('avatar');
@@ -18,21 +14,58 @@ const mpText = document.getElementById('mp-text');
 
 const tabs = document.querySelectorAll('.tab');
 
-async function loadRange(range) {
+// ==========================================
+// GOOGLE SHEETS FETCH
+// ==========================================
+
+async function fetchSheet(range) {
+
+  const [sheet, cells] = range.split('!');
 
   const url =
-    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${range.split('!')[0]}&range=${range.split('!')[1]}&tqx=out:json`;
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${sheet}&range=${cells}&tqx=out:json`;
 
   const response = await fetch(url);
 
   const text = await response.text();
 
-  const json = JSON.parse(text.substr(47).slice(0, -2));
+  const json =
+    JSON.parse(text.substr(47).slice(0, -2));
 
-  const rows = json.table.rows;
+  return json.table.rows;
+}
+
+// ==========================================
+// GET CELL VALUE
+// ==========================================
+
+function getCellValue(cell) {
+
+  if (!cell) return '';
+
+  // formatted value
+  if (cell.f !== undefined) return cell.f;
+
+  // raw value
+  if (cell.v !== undefined) return cell.v;
+
+  return '';
+}
+
+// ==========================================
+// LOAD TABLE
+// ==========================================
+
+async function loadRange(range) {
+
+  const rows = await fetchSheet(range);
 
   renderTable(rows);
 }
+
+// ==========================================
+// RENDER TABLE
+// ==========================================
 
 function renderTable(rows) {
 
@@ -44,11 +77,13 @@ function renderTable(rows) {
 
     row.c.forEach(cell => {
 
-      const element = document.createElement(
-        index === 0 ? 'th' : 'td'
-      );
+      const element =
+        document.createElement(
+          index === 0 ? 'th' : 'td'
+        );
 
-      element.textContent = cell ? cell.v : '';
+      element.textContent =
+        getCellValue(cell);
 
       tr.appendChild(element);
     });
@@ -57,62 +92,100 @@ function renderTable(rows) {
   });
 }
 
+// ==========================================
+// LOAD CONFIG
+// ==========================================
+
 async function loadConfig() {
 
-  const url =
-    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Config&range=A1:B20&tqx=out:json`;
-
-  const response = await fetch(url);
-
-  const text = await response.text();
-
-  const json = JSON.parse(text.substr(47).slice(0, -2));
-
-  const rows = json.table.rows;
+  const rows =
+    await fetchSheet('Config!A:B');
 
   const config = {};
 
   rows.forEach(row => {
 
-    const key = row.c[0]?.v;
-    const value = row.c[1]?.v;
+    const key =
+      getCellValue(row.c[0]);
+
+    const value =
+      getCellValue(row.c[1]);
 
     if (key) {
-      config[key] = value;
+      config[key.toLowerCase()] = value;
     }
   });
 
-  characterName.textContent = config.name;
+  // ==========================================
+  // NAME
+  // ==========================================
 
-  avatar.src = config.avatar;
+  characterName.textContent =
+    config.name || 'Безымянный';
+
+  // ==========================================
+  // AVATAR
+  // ==========================================
+
+  avatar.src =
+    config.avatar || '';
+
+  // ==========================================
+  // HP / MP
+  // ==========================================
+
+  const hp =
+    Number(config.hp || 0);
+
+  const maxhp =
+    Number(config.maxhp || 1);
+
+  const mp =
+    Number(config.mp || 0);
+
+  const maxmp =
+    Number(config.maxmp || 1);
 
   const hpPercent =
-    (config.hp / config.maxhp) * 100;
+    (hp / maxhp) * 100;
 
   const mpPercent =
-    (config.mp / config.maxmp) * 100;
+    (mp / maxmp) * 100;
 
-  hpFill.style.width = hpPercent + '%';
-  mpFill.style.width = mpPercent + '%';
+  hpFill.style.width =
+    hpPercent + '%';
+
+  mpFill.style.width =
+    mpPercent + '%';
 
   hpText.textContent =
-    `${config.hp}/${config.maxhp}`;
+    `${hp}/${maxhp}`;
 
   mpText.textContent =
-    `${config.mp}/${config.maxmp}`;
+    `${mp}/${maxmp}`;
 }
+
+// ==========================================
+// TABS
+// ==========================================
 
 tabs.forEach(tab => {
 
   tab.addEventListener('click', () => {
 
-    tabs.forEach(t => t.classList.remove('active'));
+    tabs.forEach(t =>
+      t.classList.remove('active')
+    );
 
     tab.classList.add('active');
 
     loadRange(tab.dataset.range);
   });
 });
+
+// ==========================================
+// INIT
+// ==========================================
 
 loadConfig();
 
