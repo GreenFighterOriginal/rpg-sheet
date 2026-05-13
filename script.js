@@ -3,7 +3,7 @@ const SHEET_ID = '1KN-5MPQgaycA6VTSFjU0k9Z91nO5DjUeelMw9qk3jbQ';
 
 // ==========================================
 
-const CONFIG_RANGE = 'Config!A:A';
+const CONFIG_RANGE = 'Config!A:B';
 
 const table = document.getElementById('data-table');
 
