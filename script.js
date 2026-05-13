@@ -116,8 +116,7 @@ async function loadConfig() {
   // NAME (FIXED)
   // ==========================================
 
-  characterName.textContent =
-    config.name || 'Безымянный';
+
 
   // ==========================================
   // AVATAR
