@@ -4,13 +4,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
   font-family: Georgia, serif;
 }
 
 body {
+
   min-height: 100vh;
 
   background-image: url('./assets/background.jpg');
+
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -19,6 +22,7 @@ body {
 }
 
 .overlay {
+
   position: fixed;
   inset: 0;
 
@@ -28,10 +32,12 @@ body {
 }
 
 .container {
+
   position: relative;
   z-index: 1;
 
   display: flex;
+
   gap: 30px;
 
   padding: 40px;
@@ -42,6 +48,7 @@ body {
 /* ========================================= */
 
 .left-panel {
+
   width: 320px;
 
   display: flex;
@@ -62,7 +69,9 @@ body {
 }
 
 .avatar-frame {
+
   width: 100%;
+
   aspect-ratio: 1 / 1;
 
   border: 3px solid #d4af37;
@@ -75,12 +84,15 @@ body {
 }
 
 .avatar-frame img {
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
 .character-name {
+
   width: 100%;
 
   text-align: center;
@@ -100,12 +112,14 @@ body {
 /* ========================================= */
 
 .bar-block {
+
   width: 100%;
 
   margin-bottom: 20px;
 }
 
 .bar-label {
+
   display: flex;
   justify-content: space-between;
 
@@ -115,6 +129,7 @@ body {
 }
 
 .bar {
+
   width: 100%;
   height: 26px;
 
@@ -128,17 +143,30 @@ body {
 }
 
 .fill {
+
   height: 100%;
 
   transition: width 0.4s ease;
 }
 
 .hp-fill {
-  background: linear-gradient(to right, #5e0000, #ff2a2a);
+
+  background:
+    linear-gradient(
+      to right,
+      #5e0000,
+      #ff2a2a
+    );
 }
 
 .mp-fill {
-  background: linear-gradient(to right, #00195e, #2a7dff);
+
+  background:
+    linear-gradient(
+      to right,
+      #00195e,
+      #2a7dff
+    );
 }
 
 /* ========================================= */
@@ -146,6 +174,7 @@ body {
 /* ========================================= */
 
 .right-panel {
+
   flex: 1;
 
   background: rgba(20,20,20,0.85);
@@ -164,7 +193,9 @@ body {
 /* ========================================= */
 
 .tabs {
+
   display: flex;
+
   gap: 10px;
 
   margin-bottom: 20px;
@@ -173,6 +204,7 @@ body {
 }
 
 .tab {
+
   padding: 12px 20px;
 
   background: #3b2c18;
@@ -191,11 +223,251 @@ body {
 }
 
 .tab:hover {
+
   background: #5a4423;
 }
 
 .tab.active {
+
   background: #8c672f;
+}
+
+/* ========================================= */
+/* SCREENS */
+/* ========================================= */
+
+.screen.hidden {
+
+  display: none;
+}
+
+/* ========================================= */
+/* EQUIPMENT */
+/* ========================================= */
+
+.equipment-layout {
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+.equipment-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    90px
+    220px
+    90px;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.character-paperdoll {
+
+  width: 220px;
+  height: 340px;
+
+  border: 2px solid #b89040;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.4),
+      rgba(0,0,0,0.4)
+    ),
+    url('./assets/paperdoll.png');
+
+  background-size: cover;
+  background-position: center;
+
+  box-shadow:
+    inset 0 0 30px rgba(255,215,120,0.1),
+    0 0 20px rgba(0,0,0,0.7);
+}
+
+.slot,
+.belt-slot,
+.inventory-slot {
+
+  width: 72px;
+  height: 72px;
+
+  border: 2px solid #b89040;
+
+  border-radius: 14px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(255,215,120,0.15),
+      transparent
+    ),
+    rgba(15,15,15,0.95);
+
+  box-shadow:
+    inset 0 0 10px rgba(255,215,120,0.1),
+    0 0 12px rgba(0,0,0,0.7);
+
+  position: relative;
+
+  overflow: hidden;
+
+  transition: 0.2s;
+}
+
+.slot:hover,
+.belt-slot:hover,
+.inventory-slot:hover {
+
+  transform: scale(1.05);
+
+  border-color: gold;
+}
+
+.center-slot {
+
+  justify-self: center;
+}
+
+.item-icon {
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  cursor: grab;
+}
+
+/* ========================================= */
+/* BELT */
+/* ========================================= */
+
+.belt-wrapper {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.belt-title,
+.inventory-title {
+
+  font-size: 24px;
+
+  color: #ffd77a;
+
+  text-align: center;
+}
+
+.belt-bar {
+
+  display: flex;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+}
+
+/* ========================================= */
+/* INVENTORY */
+/* ========================================= */
+
+#inventory-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, 72px);
+
+  gap: 12px;
+
+  justify-content: center;
+}
+
+/* ========================================= */
+/* TOOLTIP */
+/* ========================================= */
+
+.tooltip {
+
+  position: fixed;
+
+  width: 320px;
+
+  background:
+    rgba(10,10,10,0.95);
+
+  border: 2px solid #b89040;
+
+  border-radius: 14px;
+
+  padding: 16px;
+
+  z-index: 9999;
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 30px rgba(0,0,0,0.9);
+}
+
+.tooltip.hidden {
+
+  display: none;
+}
+
+.tooltip-title {
+
+  font-size: 20px;
+
+  margin-bottom: 10px;
+
+  color: #ffd77a;
+}
+
+.tooltip-description {
+
+  white-space: pre-line;
+
+  color: #d6d6d6;
+
+  line-height: 1.4;
+}
+
+/* ========================================= */
+/* RARITY */
+/* ========================================= */
+
+.rarity-common {
+
+  border-color: #9d9d9d;
+}
+
+.rarity-rare {
+
+  border-color: #0070dd;
+}
+
+.rarity-epic {
+
+  border-color: #a335ee;
+}
+
+.rarity-legendary {
+
+  border-color: #ff8000;
 }
 
 /* ========================================= */
@@ -203,6 +475,7 @@ body {
 /* ========================================= */
 
 .table-container {
+
   overflow-x: auto;
   overflow-y: auto;
 
@@ -214,6 +487,7 @@ body {
 }
 
 table {
+
   width: 100%;
 
   border-collapse: collapse;
@@ -223,6 +497,7 @@ table {
 
 th,
 td {
+
   border: 1px solid #8f7440;
 
   padding: 12px;
@@ -231,6 +506,7 @@ td {
 }
 
 th {
+
   background: #4e391d;
 
   position: sticky;
@@ -240,30 +516,9 @@ th {
 }
 
 tr:nth-child(even) {
-  background: rgba(255,255,255,0.03);
-}
 
-/* ========================================= */
-/* SCROLLBAR */
-/* ========================================= */
-
-.table-container::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.table-container::-webkit-scrollbar-track {
-  background: #1e1e1e;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background: #8c672f;
-
-  border-radius: 10px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: #b89040;
+  background:
+    rgba(255,255,255,0.03);
 }
 
 /* ========================================= */
@@ -273,14 +528,23 @@ tr:nth-child(even) {
 @media (max-width: 900px) {
 
   .container {
+
     flex-direction: column;
   }
 
   .left-panel {
+
     width: 100%;
   }
 
-  table {
-    min-width: 500px;
+  .equipment-grid {
+
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .character-paperdoll {
+
+    width: 100%;
   }
 }
