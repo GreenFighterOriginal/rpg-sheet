@@ -264,9 +264,8 @@ body {
 
   justify-content: center;
   align-items: center;
-
-  gap: 18px;
   justify-items: center;
+  gap: 18px;
 }
 
 .character-paperdoll {
