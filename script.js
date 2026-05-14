@@ -497,13 +497,12 @@ tabs.forEach(tab => {
   tab.addEventListener('click', async () => {
 
     tabs.forEach(t => {
-
       t.classList.remove('active');
     });
 
     tab.classList.add('active');
 
-    // EQUIPMENT SCREEN
+    // EQUIPMENT
 
     if (tab.dataset.screen === 'equipment') {
 
@@ -513,18 +512,25 @@ tabs.forEach(tab => {
 
       renderEquipment();
       renderInventory();
+
+      return;
     }
 
-    // TABLE SCREEN
+    // TABLE TABS
 
-    else {
+    const range = tab.dataset.range;
 
-      equipmentScreen.classList.add('hidden');
-
-      tableScreen.classList.remove('hidden');
-
-      loadRange(tab.dataset.range);
+    if (!range) {
+      console.error('No data-range on tab');
+      return;
     }
+
+    equipmentScreen.classList.add('hidden');
+
+    tableScreen.classList.remove('hidden');
+
+    await loadRange(range);
+
   });
 });
 
