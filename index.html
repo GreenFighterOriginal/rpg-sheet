@@ -3,11 +3,17 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>RPG Character Sheet</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <div class="overlay"></div>
@@ -21,30 +27,59 @@
         <img id="avatar" src="" alt="avatar">
       </div>
 
-      <div class="character-name" id="character-name">
+      <div
+        class="character-name"
+        id="character-name"
+      >
         Загрузка...
       </div>
 
       <!-- HP -->
       <div class="bar-block">
+
         <div class="bar-label">
-          HP <span id="hp-text">0/0</span>
+
+          HP
+
+          <span id="hp-text">
+            0/0
+          </span>
+
         </div>
 
         <div class="bar hp-bar">
-          <div class="fill hp-fill" id="hp-fill"></div>
+
+          <div
+            class="fill hp-fill"
+            id="hp-fill"
+          ></div>
+
         </div>
+
       </div>
 
       <!-- MP -->
       <div class="bar-block">
+
         <div class="bar-label">
-          MP <span id="mp-text">0/0</span>
+
+          MP
+
+          <span id="mp-text">
+            0/0
+          </span>
+
         </div>
 
         <div class="bar mp-bar">
-          <div class="fill mp-fill" id="mp-fill"></div>
+
+          <div
+            class="fill mp-fill"
+            id="mp-fill"
+          ></div>
+
         </div>
+
       </div>
 
     </div>
@@ -53,35 +88,198 @@
     <div class="right-panel">
 
       <div class="tabs">
-        <button class="tab active" data-range="Inventory!A:D">
+
+        <button
+          class="tab active"
+          data-screen="equipment"
+        >
           Экипировка
         </button>
 
-        <button class="tab" data-range="Skills!A:D">
+        <button
+          class="tab"
+          data-range="Skills!A:D"
+        >
           Навыки
         </button>
 
-        <button class="tab" data-range="Spells!A:D">
+        <button
+          class="tab"
+          data-range="Spells!A:D"
+        >
           Личный Инвентарь
         </button>
 
-        <button class="tab" data-range="Spells!A:D">
+        <button
+          class="tab"
+          data-range="Spells!A:D"
+        >
           Банк
         </button>
 
-        <button class="tab" data-range="Spells!A:D">
+        <button
+          class="tab"
+          data-range="Spells!A:D"
+        >
           Группа
         </button>
+
       </div>
 
-      <div class="table-container">
-        <table id="data-table"></table>
+      <!-- EQUIPMENT SCREEN -->
+      <div
+        id="equipment-screen"
+        class="screen"
+      >
+
+        <div class="equipment-layout">
+
+          <!-- EQUIPMENT -->
+
+          <div class="equipment-grid">
+
+            <div
+              class="slot"
+              data-slot="head"
+            ></div>
+
+            <div class="character-paperdoll"></div>
+
+            <div
+              class="slot"
+              data-slot="amulet"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="weapon"
+            ></div>
+
+            <div
+              class="slot center-slot"
+              data-slot="chest"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="shield"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="gloves"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="legs"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="ring1"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="boots"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="belt"
+            ></div>
+
+            <div
+              class="slot"
+              data-slot="ring2"
+            ></div>
+
+          </div>
+
+          <!-- BELT -->
+
+          <div class="belt-wrapper">
+
+            <div class="belt-title">
+              Пояс
+            </div>
+
+            <div class="belt-bar">
+
+              <div
+                class="belt-slot"
+                data-belt="0"
+              ></div>
+
+              <div
+                class="belt-slot"
+                data-belt="1"
+              ></div>
+
+              <div
+                class="belt-slot"
+                data-belt="2"
+              ></div>
+
+              <div
+                class="belt-slot"
+                data-belt="3"
+              ></div>
+
+              <div
+                class="belt-slot"
+                data-belt="4"
+              ></div>
+
+              <div
+                class="belt-slot"
+                data-belt="5"
+              ></div>
+
+            </div>
+
+          </div>
+
+          <!-- INVENTORY -->
+
+          <div class="inventory-title">
+            Инвентарь
+          </div>
+
+          <div id="inventory-grid"></div>
+
+        </div>
+
+      </div>
+
+      <!-- TABLE SCREEN -->
+
+      <div
+        id="table-screen"
+        class="screen hidden"
+      >
+
+        <div class="table-container">
+
+          <table id="data-table"></table>
+
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
+  <!-- TOOLTIP -->
+
+  <div
+    id="tooltip"
+    class="tooltip hidden"
+  ></div>
+
   <script src="script.js"></script>
+
 </body>
 </html>
